@@ -9,7 +9,7 @@ export const createCulto = async (req, res) => {
     const { description, period, duration } = req.body;
 
     // validate
-    let tests = [
+    let validation = [
         {
             field: "description",
             value: description,
@@ -27,10 +27,10 @@ export const createCulto = async (req, res) => {
         }
     ];
 
-    tests = tests.map((item) => validate(item.field, item.value, item.validation));
+    validation = validation.map((item) => validate(item.field, item.value, item.validation)).filter((item) => item);
 
-    if (tests.length > 0) {
-        return res.status(400).json(tests);
+    if (validation.length > 0) {
+        return res.status(400).json({ error: true, messages: validation });
     }
 
     const newCulto = new Culto({ description, period, duration });
@@ -51,8 +51,15 @@ export const getAllCultos = async (req, res) => {
 };
 // --------------------------------------------------
 export const getCulto = async (req, res) => {
+
+    const id_culto = req.params.id_culto;
+    const validation = validate(item.field, item.value, item.validation) !== false;
+
+    if(validation)
+        return res.status(400).json({ error: true, message: validation });
+
     try {
-        return res.status(200).json(await Culto.findById(req.params.id_culto));
+        return res.status(200).json(await Culto.findById());
     } catch (e) {
         return res.status(e.status).json({ error: true, message: 'Culto não encontrado' });
     }

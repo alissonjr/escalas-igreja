@@ -5,19 +5,15 @@
 */
 const validate = (field, value, config) => {
     // -------------------
-    let messages = [];
+    if (value === undefined || (config.required && !config.required === true)) return { field, message: `${field} precisa ser informado!` };
     // -------------------
-    if (value === undefined || (config.required && !config.required === true)){
-      return { error: true, field, messages: `${field} precisa ser informado!` };
-    }
+    if (config.type && typeof field !== config.type) return { field, message:`${field} precisa ser ${config.type}!` };
     // -------------------
-    if (config.type && typeof field !== config.type) messages.push(`${field}: precisa ser ${config.type}!`);
+    if (config.min_length && value.length < config.min_length) return { field, message:`${field} precisa ter no mínimo ${value[1]} caracteres!` };
     // -------------------
-    if (config.min_length && value.length < config.min_length) messages.push(`${field} precisa ter no mínimo ${value[1]} caracteres!`);
+    if (config.max_length && value.length > config.max_length) return { field, message:`${field} precisa ter no mínimo ${value[2]} caracteres!` };
     // -------------------
-    if (config.max_length && value.length > config.max_length) messages.push(`${field} precisa ter no mínimo ${value[2]} caracteres!`);
-    // -------------------
-    return messages.length > 0 ? { error: true, field, messages } : false;
+    return false;
     // -------------------
 };
 
