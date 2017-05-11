@@ -27,10 +27,7 @@ export const createCulto = async (req, res) => {
         }
     ];
 
-    tests = tests.filter((item) => {
-        item = validate(item.field, item.value, item.validation);
-        return item;
-    });
+    tests = tests.map((item) => validate(item.field, item.value, item.validation));
 
     if (tests.length > 0) {
         return res.status(400).json(tests);
